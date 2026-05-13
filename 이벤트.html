@@ -329,7 +329,8 @@ tailwind.config = {
             엑셀을 던지면 <span class="text-accent">차트가 나옵니다.</span>
           </h1>
           <p class="text-ink-500 mt-3 text-[14px] max-w-[560px]">
-            CSV / XLSX를 올리면 컬럼을 자동 인식하고, 이벤트 기간을 매칭해 비교 시각화를 만들어 드립니다.
+            결제 데이터 엑셀을 업로드하면 컬럼을 자동 인식해서 차트 5종이 자동으로 만들어집니다.<br/>
+            <strong class="text-ink-900">처음이라면 먼저 아래 양식 다운로드</strong>를 받아 형식을 확인하세요.
           </p>
         </div>
         <div class="text-right" id="data-status">
@@ -337,6 +338,30 @@ tailwind.config = {
           <div class="font-display font-extrabold text-xl mt-1 text-ink-400">아직 없음</div>
           <div class="text-[11px] text-ink-400 mt-0.5">CSV · XLSX 업로드 또는 샘플 데이터</div>
         </div>
+      </div>
+
+      <!-- 진행 단계 시각화 -->
+      <div class="flex items-center gap-2 mb-5 text-[11px]">
+        <div class="flex items-center gap-2 bg-accent text-white px-3 py-1.5 rounded-full font-medium">
+          <span class="w-5 h-5 rounded-full bg-white text-accent grid place-items-center font-bold">1</span>
+          <span>엑셀 업로드</span>
+        </div>
+        <div class="flex-1 h-px bg-ink-200 max-w-[40px]"></div>
+        <div class="flex items-center gap-2 bg-ink-100 text-ink-500 px-3 py-1.5 rounded-full">
+          <span class="w-5 h-5 rounded-full bg-white text-ink-500 grid place-items-center font-bold">2</span>
+          <span>컬럼 자동 매칭</span>
+        </div>
+        <div class="flex-1 h-px bg-ink-200 max-w-[40px]"></div>
+        <div class="flex items-center gap-2 bg-ink-100 text-ink-500 px-3 py-1.5 rounded-full">
+          <span class="w-5 h-5 rounded-full bg-white text-ink-500 grid place-items-center font-bold">3</span>
+          <span>차트 자동 생성</span>
+        </div>
+        <div class="flex-1 h-px bg-ink-200 max-w-[40px]"></div>
+        <div class="flex items-center gap-2 bg-ink-100 text-ink-500 px-3 py-1.5 rounded-full">
+          <span class="w-5 h-5 rounded-full bg-white text-ink-500 grid place-items-center font-bold">4</span>
+          <span>인사이트 발견</span>
+        </div>
+        <div class="ml-auto text-[11px] text-ink-400">자동 진행 · 별도 클릭 없음</div>
       </div>
 
       <div class="bg-white border border-ink-100 rounded-2xl shadow-card mb-6 overflow-hidden">
@@ -352,29 +377,104 @@ tailwind.config = {
               </div>
             </div>
             <div class="mt-3 text-[11px] text-ink-500">브라우저 안에서만 처리됩니다. 서버 전송 없음.</div>
-            <div class="mt-3 flex gap-2">
-              <button id="btn-sample-data" class="text-[12px] font-medium border border-ink-200 px-3 py-1.5 rounded-md hover:bg-ink-50">샘플 데이터로 시연</button>
+            <div class="mt-3 flex flex-wrap gap-2">
+              <button id="btn-download-template" class="text-[12px] font-medium bg-accent-soft text-accent-deep px-3 py-1.5 rounded-md hover:bg-accent hover:text-white transition">📥 양식 다운로드</button>
+              <button id="btn-sample-data" class="text-[12px] font-medium border border-ink-200 px-3 py-1.5 rounded-md hover:bg-ink-50">샘플로 시연</button>
               <button id="btn-clear-data" class="text-[12px] text-ink-500 px-3 py-1.5 hover:text-ink-900">데이터 비우기</button>
+            </div>
+            <div class="mt-2 text-[10px] text-ink-400 leading-relaxed">
+              <strong class="text-ink-500">📥 양식 다운로드:</strong> CSV 양식을 받아 자기 데이터로 채워서 업로드<br/>
+              <strong class="text-ink-500">샘플로 시연:</strong> 가짜 데이터로 모든 기능 미리 체험
             </div>
           </div>
 
           <div class="col-span-3 p-6">
             <div class="flex items-center justify-between mb-3">
-              <div class="label-eyebrow">Auto-detected Columns</div>
+              <div>
+                <div class="label-eyebrow" id="data-mapping-label">필요한 컬럼 7가지 (업로드 전 안내)</div>
+                <div class="text-[10px] text-ink-400 mt-0.5" id="data-mapping-sub">엑셀에 아래 항목이 있으면 자동 인식됩니다. 컬럼 이름이 달라도 OK — 매핑 단계에서 수정 가능</div>
+              </div>
               <div class="flex items-center gap-3">
                 <span class="text-[11px] text-ink-400" id="data-rowcount">—</span>
                 <button id="btn-remap" class="text-[11px] font-medium text-accent hover:text-accent-deep hidden">✎ 매핑 수정</button>
               </div>
             </div>
-            <div id="data-mapping" class="grid grid-cols-2 gap-x-6 gap-y-2.5 text-[13px]"></div>
+            <div id="data-mapping" class="grid grid-cols-2 gap-x-6 gap-y-2.5 text-[13px]">
+              <!-- 업로드 전: 필요한 컬럼 미리 표시 -->
+              <div class="flex items-center gap-2"><span class="chip bg-accent-soft text-accent-deep" style="font-size:9px">필수</span><div><div class="text-[12px] font-medium">📅 날짜</div><div class="text-[10px] text-ink-400 font-mono">2026-05-12 14:30 또는 2026/05/12</div></div></div>
+              <div class="flex items-center gap-2"><span class="chip bg-accent-soft text-accent-deep" style="font-size:9px">필수</span><div><div class="text-[12px] font-medium">💰 결제액</div><div class="text-[10px] text-ink-400 font-mono">128000 또는 128,000원</div></div></div>
+              <div class="flex items-center gap-2"><span class="chip bg-ink-100 text-ink-500" style="font-size:9px">선택</span><div><div class="text-[12px] font-medium">👤 사용자 ID</div><div class="text-[10px] text-ink-400 font-mono">user_001 / 회원번호</div></div></div>
+              <div class="flex items-center gap-2"><span class="chip bg-ink-100 text-ink-500" style="font-size:9px">선택</span><div><div class="text-[12px] font-medium">🏷️ 카테고리</div><div class="text-[10px] text-ink-400 font-mono">항공 · 호텔 · 렌터카</div></div></div>
+              <div class="flex items-center gap-2"><span class="chip bg-ink-100 text-ink-500" style="font-size:9px">선택</span><div><div class="text-[12px] font-medium">🤝 제휴사</div><div class="text-[10px] text-ink-400 font-mono">대한항공 · 신라스테이</div></div></div>
+              <div class="flex items-center gap-2"><span class="chip bg-ink-100 text-ink-500" style="font-size:9px">선택</span><div><div class="text-[12px] font-medium">🎫 이벤트 코드</div><div class="text-[10px] text-ink-400 font-mono">EVT_Q1_2026 (해당 결제의 캠페인)</div></div></div>
+              <div class="flex items-center gap-2 col-span-2"><span class="chip bg-ink-100 text-ink-500" style="font-size:9px">선택</span><div><div class="text-[12px] font-medium">⭐ 적립 리워드</div><div class="text-[10px] text-ink-400 font-mono">3840 (해당 결제로 적립된 포인트·금액)</div></div></div>
+            </div>
             <div class="mt-4 flex items-center gap-2">
-              <span id="data-hint" class="text-[11px] text-ink-500">먼저 데이터를 업로드해 주세요.</span>
+              <span id="data-hint" class="text-[11px] text-ink-500">💡 필수 2개 (날짜·결제액)만 있어도 차트가 만들어져요. 나머지는 있으면 더 풍부한 분석.</span>
             </div>
           </div>
         </div>
       </div>
 
+      <!-- 🎯 가이드 카드 — 이 페이지에서 뭘 볼 수 있나요? -->
+      <details id="data-guide-card" class="bg-white border border-ink-100 rounded-2xl shadow-card mb-6 overflow-hidden group" open>
+        <summary class="cursor-pointer p-5 flex items-center justify-between hover:bg-paper-soft/40">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg bg-accent-soft grid place-items-center text-accent text-lg">💡</div>
+            <div>
+              <div class="font-display font-bold text-[15px]">이 페이지에서 무엇을 발견할 수 있나요?</div>
+              <div class="text-[12px] text-ink-500 mt-0.5">처음 사용하시면 펼쳐서 읽어보세요 · 다음에는 ▾ 눌러 접어두면 됩니다</div>
+            </div>
+          </div>
+          <span class="chev text-ink-400 text-lg">▾</span>
+        </summary>
+        <div class="px-5 pb-5">
+          <div class="border-t border-ink-100 pt-4">
+            <p class="text-[13px] text-ink-700 leading-relaxed mb-4">
+              결제 데이터를 분석해서 <strong class="text-ink-900">이벤트가 실제로 효과가 있었는지</strong> 확인하고, <strong class="text-ink-900">다음 이벤트를 어떻게 설계할지</strong> 단서를 찾는 페이지입니다. 별도로 클릭할 필요 없이, 아래로 스크롤하면 자동으로 차트가 보입니다.
+            </p>
+            <div class="grid md:grid-cols-2 gap-3 mb-4">
+              <div class="border border-ink-100 rounded-lg p-3.5 bg-paper-soft/30">
+                <div class="text-[11px] text-accent-deep font-bold mb-1">📈 매출 추이 차트</div>
+                <div class="font-display font-bold text-[13px] mb-1">이벤트 시점에 매출이 정말 올랐나?</div>
+                <p class="text-[11px] text-ink-500 leading-snug">기간별 결제액 그래프에서 이벤트 시작 시점에 매출이 어떻게 바뀌었는지 한눈에 확인할 수 있어요.</p>
+              </div>
+              <div class="border border-ink-100 rounded-lg p-3.5 bg-paper-soft/30">
+                <div class="text-[11px] text-accent-deep font-bold mb-1">🥧 카테고리 분포</div>
+                <div class="font-display font-bold text-[13px] mb-1">어느 카테고리가 가장 잘 팔렸나?</div>
+                <p class="text-[11px] text-ink-500 leading-snug">항공 / 호텔 / 렌터카 등 어느 영역에 매출이 집중됐는지 확인. 다음 이벤트 타깃 선정에 활용.</p>
+              </div>
+              <div class="border border-ink-100 rounded-lg p-3.5 bg-paper-soft/30">
+                <div class="text-[11px] text-accent-deep font-bold mb-1">⏰ 시간대별 패턴</div>
+                <div class="font-display font-bold text-[13px] mb-1">언제 보내면 가장 잘 열어볼까?</div>
+                <p class="text-[11px] text-ink-500 leading-snug">결제가 몰리는 시간대를 보고 푸시·메시지 발송 타이밍을 잡아보세요.</p>
+              </div>
+              <div class="border border-ink-100 rounded-lg p-3.5 bg-paper-soft/30">
+                <div class="text-[11px] text-accent-deep font-bold mb-1">👥 RFM 고객 세그먼트</div>
+                <div class="font-display font-bold text-[13px] mb-1">우리 VIP는 누구이고, 휴면은 누구?</div>
+                <p class="text-[11px] text-ink-500 leading-snug">5×5 그리드 히트맵으로 고객을 그룹화. 누구한테 어떤 메시지를 보낼지 결정하기 위함.</p>
+              </div>
+            </div>
+            <div class="bg-accent-soft/40 border border-accent-soft rounded-lg p-3 text-[12px] text-ink-700 flex items-start gap-2">
+              <span class="text-accent shrink-0">💡</span>
+              <div>
+                <strong>가장 중요한 단계:</strong> 차트들을 보고 나서 좌측 사이드바의 <strong>💡 인사이트 도출</strong> 페이지로 이동하세요. 데이터에서 자동으로 발견한 의미 있는 패턴을 정리해서 보여주고, 거기서 바로 <strong>"기획안 만들기"</strong> 로 연결됩니다. 분석 → 기획으로 이어지는 흐름이 핵심입니다.
+              </div>
+            </div>
+          </div>
+        </div>
+      </details>
+
       <div id="data-results" class="hidden">
+        <!-- 결과 영역 인트로 -->
+        <div class="bg-leaf-soft border border-leaf/20 rounded-xl mb-4 px-5 py-3 flex items-start gap-3 text-[13px]">
+          <span class="text-leaf text-base shrink-0 mt-0.5">✓</span>
+          <div class="text-ink-700 leading-relaxed flex-1">
+            <strong class="text-ink-900">매핑 완료 · 아래 차트들이 자동으로 만들어졌습니다.</strong> 한 번에 다 이해하려 하지 마세요. 위에서부터 하나씩 보면서, 데이터에서 "어? 이상한데?" 또는 "오, 이거 흥미롭네?" 싶은 게 있는지 찾아보세요.
+          </div>
+          <a href="#" onclick="navTo('insight'); return false;" class="text-accent font-medium text-[12px] hover:text-accent-deep whitespace-nowrap mt-0.5">💡 인사이트 보기 →</a>
+        </div>
+
         <div class="bg-white border border-ink-100 rounded-xl shadow-card mb-4 px-5 py-3 flex items-center gap-3 text-[12px]">
           <span class="label-eyebrow">Filter</span>
           <div class="seg" id="data-gran"><button data-g="day">일간</button><button class="active" data-g="week">주간</button><button data-g="month">월간</button></div>
@@ -392,6 +492,7 @@ tailwind.config = {
               <div>
                 <div class="label-eyebrow">매출 추이</div>
                 <div class="font-display font-bold text-[16px] mt-1">기간별 결제액</div>
+                <div class="text-[11px] text-ink-500 mt-0.5">📌 이벤트 시점에 매출이 정말 올랐는지 한눈에 — 빨간 점선이 이벤트 시작일</div>
               </div>
               <div class="flex items-center gap-3 text-[11px] text-ink-500">
                 <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-ink-900"></span>결제액</span>
@@ -402,7 +503,8 @@ tailwind.config = {
           </div>
           <div class="bg-white border border-ink-100 rounded-2xl shadow-card p-5">
             <div class="label-eyebrow">카테고리 비중</div>
-            <div class="font-display font-bold text-[16px] mt-1 mb-3">카테고리별 매출</div>
+            <div class="font-display font-bold text-[16px] mt-1">카테고리별 매출</div>
+            <div class="text-[11px] text-ink-500 mt-0.5 mb-3">📌 어디에 매출이 집중됐는지 — 다음 이벤트 타깃 선정에 활용</div>
             <canvas id="catChart" height="180"></canvas>
             <ul id="cat-legend" class="mt-4 space-y-1.5 text-[12px]"></ul>
           </div>
@@ -411,18 +513,21 @@ tailwind.config = {
         <div class="grid grid-cols-3 gap-4 mb-4">
           <div class="bg-white border border-ink-100 rounded-2xl shadow-card p-5">
             <div class="label-eyebrow">고객 세그먼트</div>
-            <div class="font-display font-bold text-[16px] mt-1 mb-3">RFM 5분위</div>
+            <div class="font-display font-bold text-[16px] mt-1">RFM 5분위</div>
+            <div class="text-[11px] text-ink-500 mt-0.5 mb-3">📌 우리 고객을 25개 그룹으로 — 누구한테 어떤 메시지 보낼지</div>
             <div id="rfmGrid" class="grid grid-cols-5 gap-0.5"></div>
             <div class="text-[11px] text-ink-500 mt-3"><span class="font-medium text-ink-900">우측 상단</span>이 가치 높은 고객층. 짙을수록 매출 비중 ↑</div>
           </div>
           <div class="bg-white border border-ink-100 rounded-2xl shadow-card p-5">
             <div class="label-eyebrow">시간대 패턴</div>
-            <div class="font-display font-bold text-[16px] mt-1 mb-3">요일·시간 결제 분포</div>
+            <div class="font-display font-bold text-[16px] mt-1">요일·시간 결제 분포</div>
+            <div class="text-[11px] text-ink-500 mt-0.5 mb-3">📌 언제 메시지 보내야 가장 잘 열어볼지 — 결제 몰리는 시간대 확인</div>
             <div id="heatmap" class="grid gap-0.5" style="grid-template-columns: auto repeat(24, 1fr);"></div>
           </div>
           <div class="bg-white border border-ink-100 rounded-2xl shadow-card p-5">
             <div class="label-eyebrow">기간 비교</div>
-            <div class="font-display font-bold text-[16px] mt-1 mb-3">이벤트 vs 비이벤트</div>
+            <div class="font-display font-bold text-[16px] mt-1">이벤트 vs 비이벤트</div>
+            <div class="text-[11px] text-ink-500 mt-0.5 mb-3">📌 이벤트가 정말 효과 있었나 — 평소 대비 얼마나 늘었는지 숫자로</div>
             <div id="period-compare" class="space-y-3"></div>
           </div>
         </div>
@@ -2329,6 +2434,7 @@ const MappingModal = {
     DataPage.rows = norm;
     DataPage.rawRows = this.rawRows;  // 재매핑 시 다시 사용
     DataPage.mapping = this.mapping;
+    DataPage.lastConfidence = 100;  // 사용자가 직접 확인했으므로 100%
     DB.setDataSet({
       rows: norm.map(r => ({...r, ts: r.ts ? r.ts.toISOString() : null})),
       mapping: this.mapping,
@@ -2338,7 +2444,7 @@ const MappingModal = {
     DataPage.renderMapping();
     DataPage.renderResults();
     Modal.close('mapping');
-    toast(`${norm.length.toLocaleString()}행 분석 시작`,'ok');
+    toast(`${norm.length.toLocaleString()}행 분석 시작 (수동 매핑 적용)`,'ok');
     renderSidebarCounts();
   },
 };
@@ -3338,15 +3444,27 @@ const DataPage = {
     if (!rows.length) { toast('데이터가 비어 있습니다','err'); return; }
     this.rawRows = rows;  // 메모리 보관 (재매핑용)
     const det = detectColumns(rows);
-    // 신뢰도 < 70 또는 명시적 매핑 수정 요청 시 모달 띄움
-    if (!options.skipModal && (det.confidence < 70 || options.forceModal)) {
+    this.mapping = det.mapping;
+    this.lastConfidence = det.confidence;
+
+    // ✎ 매핑 수정 버튼으로 명시 호출 시에만 모달
+    if (options.forceModal) {
       MappingModal.open(rows, options.fileName || '업로드 파일');
       return;
     }
-    this.mapping = det.mapping;
+    // 필수 컬럼 (날짜·금액) 자동 매핑됐는지 확인
+    const hasRequired = this.mapping.date && this.mapping.amount;
+    if (!hasRequired) {
+      // 필수 컬럼이 자동으로 안 잡히면 그때만 모달 (분석 자체가 불가능)
+      toast('날짜 또는 결제액 컬럼을 자동으로 찾지 못했어요. 직접 지정해 주세요.','err');
+      MappingModal.open(rows, options.fileName || '업로드 파일');
+      return;
+    }
+    // 필수 컬럼이 잡혔으면 신뢰도 관계없이 자동 진행
     const norm = normalizeRows(rows, this.mapping);
     if (!norm.length) {
-      // 자동 매핑 실패 → 모달로 fallback
+      // 정규화 결과가 0행 (날짜/금액 값 형식 문제) → fallback
+      toast('값 형식을 읽지 못했어요. 매핑을 직접 확인해 주세요.','err');
       MappingModal.open(rows, options.fileName || '업로드 파일');
       return;
     }
@@ -3355,37 +3473,70 @@ const DataPage = {
       rows: norm.map(r => ({...r, ts: r.ts ? r.ts.toISOString() : null})),
       mapping: this.mapping,
       loadedAt: Date.now(),
-      rawRows: rows.length <= 5000 ? rows : null,  // 5천행 이하만 storage에 저장
+      rawRows: rows.length <= 5000 ? rows : null,
     });
     this.renderMapping();
     this.renderResults();
-    toast(`${norm.length.toLocaleString()}행 분석 완료`,'ok');
+    // 신뢰도에 따라 다른 토스트
+    if (det.confidence >= 80) {
+      toast(`${norm.length.toLocaleString()}행 자동 분석 완료 (매핑 신뢰도 ${det.confidence}%)`,'ok');
+    } else if (det.confidence >= 50) {
+      toast(`${norm.length.toLocaleString()}행 분석 완료 · 신뢰도 ${det.confidence}% — 잘못된 매핑이 있으면 ✎ 매핑 수정`,'ok');
+    } else {
+      toast(`${norm.length.toLocaleString()}행 분석 완료 · 매핑 자신 없음 (${det.confidence}%) — ✎ 매핑 수정 권장`,'');
+    }
     renderSidebarCounts();
   },
 
   renderMapping() {
     const m = this.mapping || {};
-    const items = [
-      ['날짜', m.date], ['결제액', m.amount], ['사용자 ID', m.user],
-      ['카테고리', m.category], ['제휴사', m.partner], ['이벤트 코드', m.event], ['적립금', m.reward],
-    ];
-    $('#data-mapping').innerHTML = items.map(([k,v]) => `
-      <div class="flex items-center justify-between border-b border-ink-50 pb-2">
-        <span class="text-ink-500">${k}</span>
-        <span class="font-mono text-[12px] ${v?'':'text-ink-300'}">${v || '—'}</span>
-      </div>`).join('');
-    $('#data-rowcount').textContent = this.rows.length ? `${this.rows.length.toLocaleString()} 행` : '—';
-    if (this.rows.length) {
-      $('#data-hint').textContent = '데이터가 준비되었습니다. 자동 분석이 적용됩니다.';
-      $('#btn-remap').classList.remove('hidden');
-      const min = this.rows[0].date, max = this.rows[this.rows.length-1].date;
-      $('#data-status').innerHTML = `
-        <div class="text-[11px] text-ink-500">현재 로드된 데이터</div>
-        <div class="font-display font-extrabold text-xl mt-1">${this.rows.length.toLocaleString()} 행</div>
-        <div class="text-[11px] text-ink-400 mt-0.5 num">${min} → ${max}</div>`;
-    } else {
+    if (!this.rows.length) {
+      // 업로드 전 — 가이드 UI는 HTML default 그대로 두기
+      $('#data-mapping-label').textContent = '필요한 컬럼 7가지 (업로드 전 안내)';
+      $('#data-mapping-sub').textContent = '엑셀에 아래 항목이 있으면 자동 인식됩니다. 컬럼 이름이 달라도 OK — 매핑 단계에서 수정 가능';
+      $('#data-rowcount').textContent = '—';
+      $('#data-hint').textContent = '💡 필수 2개 (날짜·결제액)만 있어도 차트가 만들어져요. 나머지는 있으면 더 풍부한 분석.';
       $('#btn-remap').classList.add('hidden');
+      return;
     }
+    // 업로드 후 — 매핑 결과로 전환
+    const conf = this.lastConfidence || 100;
+    const confColor = conf >= 80 ? 'text-leaf' : conf >= 50 ? 'text-gold' : 'text-accent';
+    const confBg = conf >= 80 ? 'bg-leaf-soft' : conf >= 50 ? 'bg-gold-soft' : 'bg-accent-soft';
+    $('#data-mapping-label').innerHTML = `✓ 자동 매핑 완료 <span class="chip ${confBg} ${confColor} ml-1" style="font-size:9px">신뢰도 ${conf}%</span>`;
+    $('#data-mapping-sub').textContent = conf >= 80
+      ? '엑셀 컬럼이 EP Studio 항목과 잘 연결됐어요. 차트가 자동으로 만들어집니다.'
+      : conf >= 50
+      ? '대부분 잘 잡았지만 일부 컬럼이 불확실해요. 매핑 결과를 확인해 보세요.'
+      : '컬럼 이름이 일반적이지 않아 자신이 없어요. ✎ 매핑 수정으로 직접 확인 권장.';
+    const items = [
+      ['📅 날짜', m.date, true], ['💰 결제액', m.amount, true], ['👤 사용자 ID', m.user, false],
+      ['🏷️ 카테고리', m.category, false], ['🤝 제휴사', m.partner, false], ['🎫 이벤트 코드', m.event, false], ['⭐ 적립 리워드', m.reward, false],
+    ];
+    $('#data-mapping').innerHTML = items.map(([k,v,req]) => `
+      <div class="flex items-center justify-between border-b border-ink-50 pb-2">
+        <span class="text-ink-500 flex items-center gap-1.5">${k}${req?'<span class="chip bg-accent-soft text-accent-deep" style="font-size:9px">필수</span>':''}</span>
+        <span class="font-mono text-[12px] ${v?'text-ink-900':'text-ink-300'}">${v || '— (없음)'}</span>
+      </div>`).join('');
+    $('#data-rowcount').textContent = `${this.rows.length.toLocaleString()} 행`;
+    $('#data-hint').innerHTML = conf >= 80
+      ? '✓ 데이터가 준비되었습니다. 아래로 스크롤하면 차트가 자동으로 보입니다.'
+      : `⚠️ 매핑 신뢰도 <strong class="${confColor}">${conf}%</strong> — 잘못 인식된 컬럼이 있으면 우측 <strong class="text-accent">✎ 매핑 수정</strong> 버튼으로 확인`;
+    $('#btn-remap').classList.remove('hidden');
+    // 신뢰도 낮으면 매핑 수정 버튼 강조
+    if (conf < 80) {
+      $('#btn-remap').classList.add('pulse-accent');
+      $('#btn-remap').classList.add('bg-accent','text-white','px-2','py-1','rounded');
+      $('#btn-remap').classList.remove('text-accent','hover:text-accent-deep');
+    } else {
+      $('#btn-remap').classList.remove('pulse-accent','bg-accent','text-white','px-2','py-1','rounded');
+      $('#btn-remap').classList.add('text-accent','hover:text-accent-deep');
+    }
+    const min = this.rows[0].date, max = this.rows[this.rows.length-1].date;
+    $('#data-status').innerHTML = `
+      <div class="text-[11px] text-ink-500">현재 로드된 데이터</div>
+      <div class="font-display font-extrabold text-xl mt-1">${this.rows.length.toLocaleString()} 행</div>
+      <div class="text-[11px] text-ink-400 mt-0.5 num">${min} → ${max}</div>`;
   },
 
   renderResults() {
@@ -3907,6 +4058,10 @@ function init() {
     DataPage.rows = DB.state.dataSet.rows.map(r => ({...r, ts: r.ts ? new Date(r.ts) : null}));
     DataPage.mapping = DB.state.dataSet.mapping;
     DataPage.rawRows = DB.state.dataSet.rawRows || null;  // 새로고침 후에도 재매핑 가능
+    // 신뢰도 재계산 (저장 안 됨)
+    if (DataPage.rawRows && DataPage.rawRows.length) {
+      try { DataPage.lastConfidence = detectColumns(DataPage.rawRows).confidence; } catch(e) {}
+    }
   }
   renderPlanPage();
   renderSidebarCounts();
@@ -3940,6 +4095,37 @@ function init() {
   $('#btn-sample-data').onclick = () => {
     const rows = generateSampleData();
     DataPage.load(rows);
+  };
+  $('#btn-download-template').onclick = () => {
+    // EP Studio 양식 CSV — 사용자가 받아 자기 데이터로 채울 수 있도록
+    const today = new Date();
+    const fmt = (d) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    const d1 = new Date(today); d1.setDate(d1.getDate()-3); d1.setHours(14,30,0);
+    const d2 = new Date(today); d2.setDate(d2.getDate()-3); d2.setHours(15,15,0);
+    const d3 = new Date(today); d3.setDate(d3.getDate()-2); d3.setHours(9,40,0);
+    const d4 = new Date(today); d4.setDate(d4.getDate()-2); d4.setHours(11,5,0);
+    const d5 = new Date(today); d5.setDate(d5.getDate()-1); d5.setHours(16,20,0);
+    const csv = '\ufeff' + [
+      '날짜,결제액,사용자ID,카테고리,제휴사,이벤트코드,적립리워드',
+      `${fmt(d1)},128000,user_001,항공,대한항공,EVT_Q1_2026,3840`,
+      `${fmt(d2)},89000,user_002,호텔,신라스테이,EVT_Q1_2026,2670`,
+      `${fmt(d3)},45000,user_003,렌터카,SK렌터카,,1350`,
+      `${fmt(d4)},220000,user_001,항공,아시아나항공,EVT_Q1_2026,6600`,
+      `${fmt(d5)},67000,user_004,호텔,롯데호텔,,2010`,
+      '# 이 줄들은 EP Studio가 자동 인식하는 컬럼 예시입니다.',
+      '# 필수: 날짜 · 결제액  (이 두 컬럼만 있어도 차트 생성 가능)',
+      '# 선택: 사용자ID · 카테고리 · 제휴사 · 이벤트코드 · 적립리워드 (있으면 더 풍부한 분석)',
+      '# 컬럼 이름은 한글/영문 둘 다 OK. 자동 인식 실패 시 매핑 모달에서 수정 가능.',
+      '# 위 # 줄들과 이 줄은 삭제하고 자기 데이터를 넣으세요.',
+    ].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `EP_Studio_데이터양식_${todayISO()}.csv`;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    toast('양식 CSV 다운로드 시작','ok');
   };
   $('#btn-clear-data').onclick = () => {
     DB.clearDataSet(); DataPage.rows = []; DataPage.mapping = {};
