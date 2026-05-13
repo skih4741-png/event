@@ -1395,6 +1395,8 @@ function copyToClipboard(text) {
    ============================================================================ */
 function mockupIosPush(plan, copy) {
   const svc = DB.state.settings.svc || 'TRIP+';
+  const t = getTheme(plan);
+  const iconChar = (svc.trim() || 'E').charAt(0).toUpperCase();
   const [head, body] = copy || ['—','—'];
   return `<div class="device-frame mx-auto" style="width:280px">
     <div class="device-screen"><div class="notch"></div>
@@ -1404,7 +1406,7 @@ function mockupIosPush(plan, copy) {
         <div style="font-size:12px; color:#3a3a42; font-weight:500;">2026년 5월 12일 화요일</div>
       </div>
       <div class="ios-push">
-        <div class="ap-row"><div class="ap-icon">E</div><span>${escapeHtml(svc)}</span><span style="margin-left:auto">방금</span></div>
+        <div class="ap-row"><div class="ap-icon" style="background:${t.accent}; color:${t.accentInk}">${escapeHtml(iconChar)}</div><span>${escapeHtml(svc)}</span><span style="margin-left:auto">방금</span></div>
         <div class="ap-title">${escapeHtml(head)}</div>
         <div class="ap-body">${escapeHtml(body)}</div>
       </div>
@@ -1413,6 +1415,8 @@ function mockupIosPush(plan, copy) {
 }
 function mockupAndroidPush(plan, copy) {
   const svc = DB.state.settings.svc || 'TRIP+';
+  const t = getTheme(plan);
+  const iconChar = (svc.trim() || 'E').charAt(0).toUpperCase();
   const [head, body] = copy || ['—','—'];
   return `<div class="device-frame mx-auto" style="width:280px; border-radius:20px;">
     <div class="device-screen" style="border-radius:14px; background:#e8eaef;">
@@ -1422,7 +1426,7 @@ function mockupAndroidPush(plan, copy) {
         <div style="font-size:11px; color:#5a5a64;">화요일, 5월 12일</div>
       </div>
       <div class="and-push">
-        <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;"><div style="width:14px;height:14px;border-radius:3px;background:#ff5b3a;display:grid;place-items:center;color:white;font-size:8px;font-weight:800">E</div><span style="font-size:11px;color:#5a5a64;font-weight:500">${escapeHtml(svc)}</span><span style="margin-left:auto;font-size:10px;color:#8a8a94">지금</span></div>
+        <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;"><div style="width:14px;height:14px;border-radius:3px;background:${t.accent};display:grid;place-items:center;color:${t.accentInk};font-size:8px;font-weight:800">${escapeHtml(iconChar)}</div><span style="font-size:11px;color:#5a5a64;font-weight:500">${escapeHtml(svc)}</span><span style="margin-left:auto;font-size:10px;color:#8a8a94">지금</span></div>
         <div style="font-size:13px;font-weight:600">${escapeHtml(head)}</div>
         <div style="font-size:12px;color:#3a3a42;line-height:1.4;margin-top:2px">${escapeHtml(body)}</div>
       </div>
@@ -1433,7 +1437,8 @@ function mockupInAppBanner(plan, copy, position) {
   const [head, body, cta] = copy || ['—','—','확인'];
   const url = buildUrl(plan, 'banner') || '#';
   const t = getTheme(plan);
-  const emoji = plan.benefitType?.includes('적립') ? '💰' : plan.benefitType?.includes('할인') ? '🏷️' : '🎁';
+  const svc = DB.state.settings.svc || 'TRIP+';
+  const iconChar = (svc.trim() || 'E').charAt(0).toUpperCase();
   const positionLabel = position==='top'?'상단 배너':position==='middle'?'중앙 카드':'하단 플로팅';
   const isDark = parseInt(t.bg.slice(1,3), 16) < 80;
   const cardBg = isDark ? '#1f1f24' : '#ffffff';
@@ -1443,7 +1448,7 @@ function mockupInAppBanner(plan, copy, position) {
     content = `
       <div style="font-size:10px;color:${isDark?'rgba(255,255,255,.5)':'#8a8a94'};margin-bottom:8px;font-family:${t.font}">홈</div>
       <a href="${escapeHtml(url)}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:12px;background:${t.bg};color:${t.ink};border-radius:10px;padding:14px 16px;text-decoration:none;font-family:${t.font};border:1px solid ${isDark?'rgba(255,255,255,.06)':'transparent'}">
-        <div style="width:36px;height:36px;border-radius:9px;background:${t.accent};display:grid;place-items:center;font-size:18px;flex-shrink:0;color:${t.accentInk}">${emoji}</div>
+        <div style="width:36px;height:36px;border-radius:9px;background:${t.accent};display:grid;place-items:center;font-size:16px;font-weight:800;flex-shrink:0;color:${t.accentInk}">${escapeHtml(iconChar)}</div>
         <div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700;line-height:1.2">${escapeHtml(head)}</div><div style="font-size:11px;opacity:.7;margin-top:2px">${escapeHtml(body)}</div></div>
         <div style="background:${t.accent};color:${t.accentInk};padding:6px 11px;border-radius:6px;font-size:11px;font-weight:600;white-space:nowrap">${escapeHtml(cta)}</div>
       </a>
@@ -1462,7 +1467,7 @@ function mockupInAppBanner(plan, copy, position) {
     content = `
       <div style="opacity:.3;margin-bottom:8px"><div style="height:48px;background:${surfaceLight};border-radius:8px;margin-bottom:6px"></div><div style="height:48px;background:${surfaceLight};border-radius:8px;margin-bottom:6px"></div><div style="height:48px;background:${surfaceLight};border-radius:8px"></div></div>
       <a href="${escapeHtml(url)}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:12px;background:${t.bg};color:${t.ink};border:1px solid ${isDark?'rgba(255,255,255,.1)':'#ececef'};border-radius:10px;padding:14px 16px;text-decoration:none;font-family:${t.font};box-shadow:0 8px 24px -8px rgba(0,0,0,.2)">
-        <div style="width:36px;height:36px;border-radius:9px;background:${t.accent};display:grid;place-items:center;font-size:18px;flex-shrink:0;color:${t.accentInk}">${emoji}</div>
+        <div style="width:36px;height:36px;border-radius:9px;background:${t.accent};display:grid;place-items:center;font-size:16px;font-weight:800;flex-shrink:0;color:${t.accentInk}">${escapeHtml(iconChar)}</div>
         <div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700">${escapeHtml(head)}</div><div style="font-size:11px;opacity:.65;margin-top:2px">${escapeHtml(body)}</div></div>
         <div style="background:${t.accent};color:${t.accentInk};padding:6px 11px;border-radius:6px;font-size:11px;font-weight:600;white-space:nowrap">${escapeHtml(cta)}</div>
       </a>`;
