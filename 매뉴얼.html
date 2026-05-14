@@ -1,0 +1,668 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>EP Studio · 사용 매뉴얼</title>
+<meta name="description" content="EP Studio 사용 매뉴얼 — 5분 안에 첫 기획안부터 1페이지 결재 문서까지" />
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#fff;--bg-1:#fafafa;--bg-2:#f4f4f5;--bg-3:#e4e4e7;
+  --border:#e4e4e7;--border-strong:#d4d4d8;--border-soft:#f4f4f5;
+  --ink-1:#09090b;--ink-2:#18181b;--ink-3:#3f3f46;--ink-4:#71717a;--ink-5:#a1a1aa;
+  --accent:#18181b;--accent-hover:#27272a;
+  --success:#15803d;--success-bg:#f0fdf4;--success-border:#bbf7d0;
+  --warning:#b45309;--warning-bg:#fffbeb;--warning-border:#fde68a;
+  --danger:#b91c1c;--danger-bg:#fef2f2;--danger-border:#fecaca;
+  --info:#1d4ed8;--info-bg:#eff6ff;--info-border:#bfdbfe;
+  --r-sm:4px;--r:6px;--r-md:8px;--r-lg:10px;--r-xl:12px;--r-2xl:16px;--r-full:9999px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.04),0 1px 2px rgba(0,0,0,.02);
+  --shadow:0 2px 4px rgba(0,0,0,.04),0 1px 2px rgba(0,0,0,.03);
+  --shadow-md:0 4px 8px -2px rgba(0,0,0,.06),0 2px 4px -2px rgba(0,0,0,.03);
+  --shadow-lg:0 12px 24px -6px rgba(0,0,0,.08),0 4px 8px -4px rgba(0,0,0,.04);
+  --font-body:'Pretendard Variable',Pretendard,system-ui,-apple-system,sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,monospace;
+  --ease:cubic-bezier(0.4,0,0.2,1);
+  --t-fast:120ms;--t-base:180ms;
+  --toc-w:240px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;scroll-behavior:smooth}
+body{font-family:var(--font-body);font-size:15px;line-height:1.65;color:var(--ink-2);background:var(--bg);-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+button{font-family:inherit;border:none;background:transparent;cursor:pointer}
+a{color:inherit;text-decoration:none}
+.mono{font-family:var(--font-mono)}
+.num{font-variant-numeric:tabular-nums}
+
+/* === Top header === */
+.topbar{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.topbar-inner{max-width:1280px;margin:0 auto;padding:14px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .logo{width:28px;height:28px;background:var(--ink-1);color:var(--bg);border-radius:var(--r-md);display:grid;place-items:center;font-weight:800;font-size:13px}
+.brand .name{font-weight:700;font-size:15px;color:var(--ink-1)}
+.brand .ver{font-size:10px;color:var(--ink-5);font-weight:500;letter-spacing:.05em;margin-top:2px}
+.brand .sub{font-size:11px;color:var(--ink-4);margin-top:2px}
+.topbar-nav{display:flex;align-items:center;gap:6px}
+.topbar-nav a{font-size:13px;color:var(--ink-3);padding:6px 12px;border-radius:var(--r);transition:var(--t-fast)}
+.topbar-nav a:hover{background:var(--bg-1);color:var(--ink-1)}
+.topbar-cta{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;padding:7px 14px;border-radius:var(--r);background:var(--ink-1);color:var(--bg);transition:var(--t-fast)}
+.topbar-cta:hover{background:var(--accent-hover)}
+
+/* === Hero === */
+.hero{padding:64px 32px 48px;max-width:1280px;margin:0 auto;border-bottom:1px solid var(--border-soft)}
+.hero-eyebrow{font-size:11px;font-weight:600;color:var(--ink-4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px}
+.hero-title{font-size:48px;font-weight:800;letter-spacing:-.03em;line-height:1.1;color:var(--ink-1);margin:0 0 16px;max-width:760px}
+.hero-sub{font-size:17px;line-height:1.6;color:var(--ink-3);max-width:640px;margin:0 0 28px}
+.hero-meta{display:flex;align-items:center;gap:24px;font-size:13px;color:var(--ink-4)}
+.hero-meta b{color:var(--ink-2);font-weight:600}
+
+/* === Layout (TOC + content) === */
+.shell{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:var(--toc-w) 1fr;gap:48px;padding:48px 32px 96px}
+.toc{position:sticky;top:80px;align-self:start;max-height:calc(100vh - 100px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--bg-3) transparent}
+.toc::-webkit-scrollbar{width:6px}
+.toc::-webkit-scrollbar-thumb{background:var(--bg-3);border-radius:3px}
+.toc-section{margin-bottom:16px}
+.toc-section-label{font-size:10px;font-weight:600;color:var(--ink-5);letter-spacing:.08em;text-transform:uppercase;padding:6px 12px}
+.toc-link{display:block;padding:6px 12px;font-size:13px;color:var(--ink-4);border-left:2px solid transparent;transition:var(--t-fast);line-height:1.45}
+.toc-link:hover{color:var(--ink-1)}
+.toc-link.active{color:var(--ink-1);border-left-color:var(--ink-1);font-weight:600;background:var(--bg-1)}
+.content{min-width:0;max-width:780px}
+
+/* === Typography === */
+.t-h1{font-size:32px;font-weight:800;letter-spacing:-.025em;line-height:1.2;color:var(--ink-1);margin:0 0 12px}
+.t-h2{font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1.25;color:var(--ink-1);margin:48px 0 12px;padding-top:12px;scroll-margin-top:80px}
+.t-h3{font-size:18px;font-weight:700;letter-spacing:-.015em;line-height:1.3;color:var(--ink-1);margin:32px 0 8px;scroll-margin-top:80px}
+.t-h4{font-size:15px;font-weight:600;letter-spacing:-.005em;color:var(--ink-2);margin:20px 0 6px}
+p{margin:0 0 14px;color:var(--ink-3);line-height:1.7}
+.t-eyebrow{font-size:11px;font-weight:600;color:var(--ink-4);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.t-caption{font-size:11px;font-weight:500;color:var(--ink-4);text-transform:uppercase;letter-spacing:.06em}
+.t-sm{font-size:13px;line-height:1.55;color:var(--ink-3)}
+.t-xs{font-size:12px;color:var(--ink-4)}
+strong{color:var(--ink-1);font-weight:600}
+em{font-style:normal;color:var(--ink-1);background:linear-gradient(180deg,transparent 60%,var(--bg-2) 60%);padding:0 2px}
+
+ul,ol{margin:0 0 16px;padding-left:22px;color:var(--ink-3)}
+li{margin-bottom:6px;line-height:1.65}
+li::marker{color:var(--ink-5)}
+
+hr{border:0;border-top:1px solid var(--border-soft);margin:32px 0}
+
+code{font-family:var(--font-mono);font-size:.88em;background:var(--bg-2);color:var(--ink-1);padding:1px 6px;border-radius:var(--r-sm);border:1px solid var(--border-soft)}
+.kbd{font-family:var(--font-mono);font-size:11px;background:var(--bg);border:1px solid var(--border-strong);border-bottom-width:2px;border-radius:var(--r-sm);padding:1px 6px;color:var(--ink-2);font-weight:500}
+
+/* === Components === */
+.card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin:16px 0;transition:var(--t-base) var(--ease)}
+.card-hover:hover{border-color:var(--border-strong);transform:translateY(-1px);box-shadow:var(--shadow-md)}
+.card-pad{padding:20px 22px}
+.card-header{padding:16px 22px;border-bottom:1px solid var(--border-soft);background:var(--bg-1)}
+
+.chip{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:var(--r-full);font-size:11px;font-weight:500;background:var(--bg-2);color:var(--ink-3);border:1px solid transparent;vertical-align:middle}
+.chip-success{background:var(--success-bg);color:var(--success);border-color:var(--success-border)}
+.chip-warning{background:var(--warning-bg);color:var(--warning);border-color:var(--warning-border)}
+.chip-info{background:var(--info-bg);color:var(--info);border-color:var(--info-border)}
+.chip-dark{background:var(--ink-1);color:var(--bg)}
+
+.callout{border-left:3px solid var(--ink-1);background:var(--bg-1);padding:14px 18px;border-radius:0 var(--r) var(--r) 0;margin:16px 0}
+.callout-tip{border-left-color:var(--info);background:var(--info-bg)}
+.callout-tip strong{color:var(--info)}
+.callout-warn{border-left-color:var(--warning);background:var(--warning-bg)}
+.callout-warn strong{color:var(--warning)}
+.callout p:last-child{margin-bottom:0}
+.callout .label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px;color:var(--ink-2)}
+
+.step-row{display:flex;gap:18px;margin:18px 0;padding:18px 0;border-top:1px solid var(--border-soft)}
+.step-row:first-of-type{border-top:0;padding-top:0}
+.step-num{flex-shrink:0;width:36px;height:36px;border-radius:50%;background:var(--ink-1);color:var(--bg);display:grid;place-items:center;font-weight:700;font-size:14px;font-family:var(--font-mono)}
+.step-body{flex:1;min-width:0}
+.step-title{font-size:16px;font-weight:600;color:var(--ink-1);margin-bottom:4px}
+.step-desc{font-size:14px;color:var(--ink-3);line-height:1.6}
+
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+th{text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:var(--ink-4);letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--border);background:var(--bg-1)}
+td{padding:12px 14px;color:var(--ink-2);border-bottom:1px solid var(--border-soft);vertical-align:top}
+tr:last-child td{border-bottom:0}
+
+.tone-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:16px 0}
+.tone-card{padding:16px 18px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg)}
+.tone-card .name{font-size:13px;font-weight:600;color:var(--ink-1);margin-bottom:4px}
+.tone-card .desc{font-size:12px;color:var(--ink-4);margin-bottom:10px}
+.tone-card .sample{font-size:12px;color:var(--ink-2);background:var(--bg-1);padding:10px 12px;border-radius:var(--r);font-style:italic;line-height:1.5}
+
+/* === FAQ === */
+.faq-item{border-bottom:1px solid var(--border-soft);padding:0}
+.faq-q{padding:18px 0;cursor:pointer;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;transition:var(--t-fast)}
+.faq-q:hover{color:var(--ink-1)}
+.faq-q-text{font-size:15px;font-weight:600;color:var(--ink-2);flex:1}
+.faq-toggle{flex-shrink:0;width:20px;height:20px;display:grid;place-items:center;color:var(--ink-4);font-size:14px;transition:transform var(--t-base)}
+.faq-item.open .faq-toggle{transform:rotate(45deg);color:var(--ink-1)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height var(--t-base) var(--ease)}
+.faq-item.open .faq-a{max-height:600px}
+.faq-a-inner{padding:0 0 18px;color:var(--ink-3);font-size:14px;line-height:1.7}
+.faq-a-inner p{margin:0 0 8px}
+.faq-a-inner p:last-child{margin-bottom:0}
+
+/* === Workflow visual === */
+.workflow{display:grid;grid-template-columns:repeat(5,1fr);gap:0;margin:24px 0;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
+.workflow-cell{padding:18px 16px;text-align:center;border-right:1px solid var(--border-soft);background:var(--bg);transition:var(--t-fast)}
+.workflow-cell:last-child{border-right:0}
+.workflow-cell:hover{background:var(--bg-1)}
+.workflow-num{font-family:var(--font-mono);font-size:11px;font-weight:600;color:var(--ink-4);margin-bottom:8px}
+.workflow-title{font-size:13px;font-weight:600;color:var(--ink-1);margin-bottom:4px}
+.workflow-desc{font-size:11px;color:var(--ink-4);line-height:1.5}
+
+/* === Footer === */
+.footer{border-top:1px solid var(--border-soft);padding:32px;text-align:center;color:var(--ink-4);font-size:13px;background:var(--bg-1)}
+.footer a{color:var(--ink-2);font-weight:500}
+.footer a:hover{color:var(--ink-1)}
+
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr;padding:32px 20px}
+  .toc{display:none}
+  .hero{padding:48px 20px 32px}
+  .hero-title{font-size:32px}
+  .workflow{grid-template-columns:repeat(2,1fr)}
+  .workflow-cell{border-bottom:1px solid var(--border-soft)}
+  .tone-grid{grid-template-columns:1fr}
+  .topbar-nav a{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="이벤트.html" class="brand">
+      <div class="logo">E</div>
+      <div>
+        <div class="name">EP Studio</div>
+        <div class="sub">사용 매뉴얼</div>
+      </div>
+    </a>
+    <nav class="topbar-nav">
+      <a href="#quickstart">빠른 시작</a>
+      <a href="#workflow">사용 흐름</a>
+      <a href="#features">핵심 기능</a>
+      <a href="#faq">FAQ</a>
+      <a href="이벤트.html" class="topbar-cta">앱 열기 →</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-eyebrow">EP STUDIO · v0.4 PRO</div>
+  <h1 class="hero-title">기획에서 발송까지,<br>한 번에.</h1>
+  <p class="hero-sub">이벤트·프로모션 한 건을 만들면 카피·배너·기획서·보고서까지 결재 받을 수 있는 품질로 자동 생성됩니다. 이 문서는 5분 안에 첫 기획안을 끝내도록 도와줍니다.</p>
+  <div class="hero-meta">
+    <div><b>읽는 시간</b> 약 8분</div>
+    <div><b>업데이트</b> 2026.05</div>
+    <div><b>버전</b> v0.4 Pro</div>
+  </div>
+</section>
+
+<div class="shell">
+
+  <!-- TOC -->
+  <aside class="toc" id="toc">
+    <div class="toc-section">
+      <div class="toc-section-label">Getting Started</div>
+      <a href="#intro" class="toc-link active">소개</a>
+      <a href="#quickstart" class="toc-link">3분 빠른 시작</a>
+      <a href="#workflow" class="toc-link">전체 사용 흐름</a>
+    </div>
+    <div class="toc-section">
+      <div class="toc-section-label">Step by Step</div>
+      <a href="#step1" class="toc-link">1. 기획안 만들기</a>
+      <a href="#step2" class="toc-link">2. 산출물 자동 생성</a>
+      <a href="#step3" class="toc-link">3. 운영·기록</a>
+      <a href="#step4" class="toc-link">4. 데이터 분석</a>
+      <a href="#step5" class="toc-link">5. 인사이트</a>
+    </div>
+    <div class="toc-section">
+      <div class="toc-section-label">Features</div>
+      <a href="#features" class="toc-link">핵심 기능</a>
+      <a href="#tones" class="toc-link">톤 4종</a>
+      <a href="#brand" class="toc-link">회사 정보 설정</a>
+      <a href="#doc" class="toc-link">1페이지 기획서</a>
+      <a href="#backup" class="toc-link">데이터 백업·복원</a>
+    </div>
+    <div class="toc-section">
+      <div class="toc-section-label">Reference</div>
+      <a href="#faq" class="toc-link">자주 묻는 질문</a>
+      <a href="#shortcuts" class="toc-link">단축키·꿀팁</a>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- INTRO -->
+    <section id="intro">
+      <div class="t-eyebrow">01 · Overview</div>
+      <h1 class="t-h1">EP Studio가 무엇인가요?</h1>
+      <p>EP Studio는 <strong>이벤트·프로모션 기획부터 운영·분석까지 한 화면에서 끝내는 단일 HTML 도구</strong>입니다. 별도 서버나 계정이 없고, 모든 데이터는 <em>브라우저에 안전하게 저장</em>됩니다. 회사 IT 보안 정책에 막힐 일도 없어요.</p>
+
+      <div class="callout callout-tip">
+        <div class="label">한 줄 요약</div>
+        <p>기획안 1개 만들면 → 카피 5종 + 배너 미리보기 + 1페이지 결재 문서가 자동으로 따라옵니다.</p>
+      </div>
+
+      <h3 class="t-h3">누구를 위한 도구인가요?</h3>
+      <ul>
+        <li><strong>이벤트·프로모션 기획자</strong> — 매번 빈 PPT 화면에서 시작하지 않아도 되도록</li>
+        <li><strong>마케팅 운영 담당자</strong> — 푸시·SMS·카톡·이메일 카피를 한 번에 뽑아야 할 때</li>
+        <li><strong>실무 결재 라인</strong> — 1페이지로 정리된 결재 문서가 필요한 모든 곳</li>
+      </ul>
+    </section>
+
+    <!-- QUICK START -->
+    <section id="quickstart">
+      <h2 class="t-h2">3분 빠른 시작</h2>
+      <p>처음 들어왔다면 이 순서대로만 따라가세요.</p>
+
+      <div class="step-row">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">설정 → 회사 정보 입력</div>
+          <div class="step-desc">사이드바 <strong>설정</strong>으로 가서 <em>서비스명</em>·<em>회사명</em>·<em>발신자</em>·<em>결재선</em>·<em>문서 헤더</em>를 입력합니다. 이 5개 필드가 모든 카피·배너·기획서에 자동 반영됩니다. <span class="t-xs">(2분 소요)</span></div>
+        </div>
+      </div>
+
+      <div class="step-row">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">템플릿에서 시작 또는 새 기획안</div>
+          <div class="step-desc">사이드바 <strong>템플릿</strong>에서 가장 가까운 5종 중 하나를 골라 <em>이 템플릿으로 시작</em> 또는, 우상단 <strong>+ 새 기획안</strong> 버튼으로 빈 위저드를 엽니다. 7단계 위저드를 따라가면 됩니다. <span class="t-xs">(1분 소요)</span></div>
+        </div>
+      </div>
+
+      <div class="step-row">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">산출물 페이지에서 결과물 확인</div>
+          <div class="step-desc">위저드 완료 즉시 <strong>산출물</strong> 페이지에서 카피·비주얼·결재 문서가 자동 생성됩니다. <em>톤 4종</em>을 바꿔보거나 <em>새 변형</em> 버튼으로 카피를 다시 뽑을 수 있습니다.</div>
+        </div>
+      </div>
+
+      <div class="callout callout-tip">
+        <div class="label">Tip</div>
+        <p>처음 사용해 보고 싶다면 <strong>설정 → 샘플 데이터 채우기</strong>로 3개 기획안과 30일 로그를 한 번에 만들어 볼 수 있어요. 데이터를 다 보고 나면 <em>전체 초기화</em>로 깨끗이 비우면 됩니다.</p>
+      </div>
+    </section>
+
+    <!-- WORKFLOW -->
+    <section id="workflow">
+      <h2 class="t-h2">전체 사용 흐름</h2>
+      <p>EP Studio는 한 사이클이 5단계로 이루어져 있어요. 각 단계는 독립적이지만, 이전 단계 데이터가 다음 단계에 자동으로 흘러갑니다.</p>
+
+      <div class="workflow">
+        <a href="#step1" class="workflow-cell"><div class="workflow-num">01</div><div class="workflow-title">기획안</div><div class="workflow-desc">7단계 위저드<br>5종 템플릿</div></a>
+        <a href="#step2" class="workflow-cell"><div class="workflow-num">02</div><div class="workflow-title">산출물</div><div class="workflow-desc">카피·배너<br>1페이지 결재 문서</div></a>
+        <a href="#step3" class="workflow-cell"><div class="workflow-num">03</div><div class="workflow-title">운영</div><div class="workflow-desc">일별 성과·이슈<br>ROAS 자동 계산</div></a>
+        <a href="#step4" class="workflow-cell"><div class="workflow-num">04</div><div class="workflow-title">데이터</div><div class="workflow-desc">CSV/XLSX 업로드<br>차트 자동 생성</div></a>
+        <a href="#step5" class="workflow-cell"><div class="workflow-num">05</div><div class="workflow-title">인사이트</div><div class="workflow-desc">패턴 자동 발견<br>다음 기획 단서</div></a>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- STEP 1 -->
+    <section id="step1">
+      <div class="t-eyebrow">Step 01</div>
+      <h2 class="t-h2" style="margin-top:8px">기획안 만들기</h2>
+      <p>기획안은 EP Studio의 <strong>모든 산출물의 출발점</strong>입니다. 한번 잘 만들어두면, 그 뒤로는 자동입니다.</p>
+
+      <h3 class="t-h3">7단계 위저드</h3>
+      <table>
+        <thead><tr><th style="width:60px">단계</th><th>입력</th><th>활용처</th></tr></thead>
+        <tbody>
+          <tr><td><strong>1</strong></td><td>이벤트 유형 (리워드·가입·시즌·제휴사·휴면 5종)</td><td>카피 톤 자동 추천</td></tr>
+          <tr><td><strong>2</strong></td><td>기본 정보·일정 (제목·목적·기간·예산)</td><td>1페이지 결재 문서</td></tr>
+          <tr><td><strong>3</strong></td><td>KPI 목표 (지표·목표값·단위)</td><td>운영 대시보드 비교 기준</td></tr>
+          <tr><td><strong>4</strong></td><td>대상 세그먼트 (복수 선택)</td><td>카피 변수 <code>{seg}</code></td></tr>
+          <tr><td><strong>5</strong></td><td>혜택 설계 (유형·값·단위·한도·조건)</td><td>모든 카피의 핵심 변수</td></tr>
+          <tr><td><strong>6</strong></td><td>채널·URL (발송 채널 + 랜딩 + UTM)</td><td>채널별 카피 자동 생성</td></tr>
+          <tr><td><strong>7</strong></td><td>검토·완료 (상태 결정)</td><td>—</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <div class="label">KPI 빠른 선택</div>
+        <p>3단계에서 매출·전환율·참여자·재구매율·ROAS·평균객단가 <strong>6개 프리셋</strong>을 한 번 클릭으로 채울 수 있어요. 직접 입력도 가능합니다.</p>
+      </div>
+
+      <h3 class="t-h3">언제든 수정 가능</h3>
+      <p>기획안은 만든 뒤에도 <strong>기획안</strong> 페이지에서 <em>수정</em> 버튼으로 같은 위저드를 다시 열 수 있어요. 입력했던 모든 값이 그대로 채워져 있어서 일부만 바꿔도 됩니다.</p>
+
+      <h3 class="t-h3">상태 4종</h3>
+      <p>기획안은 다음 4가지 상태 중 하나입니다.</p>
+      <ul>
+        <li><span class="chip chip-warning">초안</span> 아직 미정인 상태. 자동 저장만 됨</li>
+        <li><span class="chip chip-info">예정</span> 시작일 도래 전. 결재 받아둔 상태</li>
+        <li><span class="chip chip-success">진행 중</span> 운영 페이지에서 일별 기록 가능</li>
+        <li><span class="chip">종료</span> 회고·아카이브</li>
+      </ul>
+    </section>
+
+    <!-- STEP 2 -->
+    <section id="step2">
+      <div class="t-eyebrow">Step 02</div>
+      <h2 class="t-h2" style="margin-top:8px">산출물 자동 생성</h2>
+      <p>이 단계가 EP Studio의 핵심입니다. 기획안 하나로 <strong>마케팅 카피 + 비주얼 미리보기 + 1페이지 결재 문서</strong>가 즉시 생성됩니다.</p>
+
+      <h3 class="t-h3" id="tones">톤 4종</h3>
+      <p>상단 톤 칩을 누르면 <strong>같은 기획안이지만 다른 어조</strong>의 카피로 즉시 전환됩니다. 채널별로 적합한 톤이 달라요.</p>
+
+      <div class="tone-grid">
+        <div class="tone-card">
+          <div class="name">혜택강조</div>
+          <div class="desc">강력한 행동 유도 · 푸시·SMS에 적합</div>
+          <div class="sample">"3배 적립 부스트<br>기존회원 대상 · 2.28까지"</div>
+        </div>
+        <div class="tone-card">
+          <div class="name">한정성</div>
+          <div class="desc">시한 강조 · 마감 임박 시점에 적합</div>
+          <div class="sample">"D-3 마감 안내<br>혜택이 곧 종료됩니다."</div>
+        </div>
+        <div class="tone-card">
+          <div class="name">친근</div>
+          <div class="desc">관계 기반 · 휴면·VIP·이메일에 적합</div>
+          <div class="sample">"기존회원님께만 드려요<br>새 혜택을 준비했습니다."</div>
+        </div>
+        <div class="tone-card">
+          <div class="name">격식</div>
+          <div class="desc">공식 안내 · B2B·기업 회원에 적합</div>
+          <div class="sample">"[TRIP+] 2026 1Q 리워드 부스트 시행 안내<br>2026.02.13 ~ 2026.02.28"</div>
+        </div>
+      </div>
+
+      <h3 class="t-h3">생성되는 카피 3탭</h3>
+      <table>
+        <thead><tr><th style="width:120px">탭</th><th>내용</th></tr></thead>
+        <tbody>
+          <tr><td><strong>📝 마케팅 카피</strong></td><td>채널별 카피 (앱 푸시 / SMS·LMS / 카카오톡 / 이메일 / 배너) · 각 채널마다 2개 변형 · <em>새 변형</em> 버튼으로 즉시 재생성 · 호버 시 <em>복사</em> 버튼 노출</td></tr>
+          <tr><td><strong>🎨 비주얼</strong></td><td>iOS 푸시 모킹 · 인앱 배너 · 웹 배너 · 이메일 카드 · 카카오톡 알림톡 5종 미리보기</td></tr>
+          <tr><td><strong>📄 결재 문서</strong></td><td>A4 1페이지로 정리된 결재 문서. PNG·HTML 복사·인쇄·PDF 출력 가능</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-tip">
+        <div class="label">SMS 자동 분기</div>
+        <p>SMS 카피 길이가 <strong>90자를 넘으면 자동으로 LMS</strong>로 표시됩니다. 변형마다 글자 수가 함께 표시돼요.</p>
+      </div>
+
+      <h3 class="t-h3">UTM 자동 부착</h3>
+      <p>기획안에 랜딩 URL을 넣고 UTM 옵션을 켜두면, 카피의 모든 링크에 다음 파라미터가 자동으로 붙습니다.</p>
+      <ul>
+        <li><code>utm_source</code> = 채널 (push·sms·kakao·email·banner)</li>
+        <li><code>utm_medium</code> = 매체 (notification·sms·social·email·display)</li>
+        <li><code>utm_campaign</code> = 캠페인 ID</li>
+      </ul>
+    </section>
+
+    <!-- STEP 3 -->
+    <section id="step3">
+      <div class="t-eyebrow">Step 03</div>
+      <h2 class="t-h2" style="margin-top:8px">운영 · 일별 기록</h2>
+      <p>기획안을 띄운 뒤, 매일 잠깐만 기록해두면 <strong>회고할 때 막막함이 없어요</strong>.</p>
+
+      <h3 class="t-h3">일별 로그</h3>
+      <p>운영 페이지에서 <strong>+ 오늘 입력</strong> 버튼을 누르고 4개 필드만 채우면 됩니다.</p>
+      <ul>
+        <li><strong>참여자</strong> — 그날 참여한 사용자 수</li>
+        <li><strong>결제액</strong> — 참여자가 만든 결제 합계</li>
+        <li><strong>리워드</strong> — 그날 지급한 혜택의 비용 합계</li>
+        <li><strong>메모</strong> — 푸시 발송 여부·특이사항 등</li>
+      </ul>
+      <p><strong>ROAS</strong>(결제÷리워드)와 일평균 예산 대비 진행률이 입력하는 중에 실시간으로 계산돼요.</p>
+
+      <h3 class="t-h3">이슈 로그</h3>
+      <p>운영 중 발생한 이슈를 기록합니다. <strong>심각도 3단계</strong>(높음·중간·낮음)와 함께 날짜·제목·상세를 남기면, 회고 PT 만들 때 그대로 활용됩니다.</p>
+
+      <div class="callout callout-warn">
+        <div class="label">중요</div>
+        <p>로그·이슈 모두 <strong>행 클릭으로 수정</strong>, 우측 <em>🗑</em>로 삭제 가능합니다. 삭제는 되돌릴 수 없으니 확인하세요.</p>
+      </div>
+    </section>
+
+    <!-- STEP 4 -->
+    <section id="step4">
+      <div class="t-eyebrow">Step 04</div>
+      <h2 class="t-h2" style="margin-top:8px">데이터 분석</h2>
+      <p>결제 로그·이벤트 참여 데이터를 던지면, <strong>컬럼 자동 인식 → 차트 자동 생성</strong>까지 이어집니다.</p>
+
+      <h3 class="t-h3">지원 포맷</h3>
+      <ul>
+        <li><code>.csv</code> · <code>.xlsx</code> · <code>.xls</code></li>
+        <li>한국어·영문 컬럼명 둘 다 자동 인식</li>
+        <li>파일 크기 권장 <strong>최대 5MB·5만 행</strong></li>
+      </ul>
+
+      <h3 class="t-h3">자동 인식되는 컬럼</h3>
+      <table>
+        <thead><tr><th style="width:80px">분류</th><th>키워드</th><th>활용</th></tr></thead>
+        <tbody>
+          <tr><td><span class="chip chip-dark">필수</span></td><td><code>날짜</code>·<code>date</code></td><td>일별 추이 차트</td></tr>
+          <tr><td><span class="chip chip-dark">필수</span></td><td><code>결제</code>·<code>금액</code>·<code>amount</code>·<code>price</code></td><td>총 거래액·평균 객단가</td></tr>
+          <tr><td><span class="chip">선택</span></td><td><code>사용자ID</code>·<code>user</code></td><td>고유 사용자 수·재구매율</td></tr>
+          <tr><td><span class="chip">선택</span></td><td><code>카테고리</code>·<code>category</code></td><td>카테고리별 분포 도넛 차트</td></tr>
+          <tr><td><span class="chip">선택</span></td><td><code>제휴사</code>·<code>partner</code></td><td>제휴사별 비교</td></tr>
+          <tr><td><span class="chip">선택</span></td><td><code>이벤트</code>·<code>event</code>·<code>코드</code></td><td>이벤트 참여 vs 일반 결제 비교</td></tr>
+          <tr><td><span class="chip">선택</span></td><td><code>적립</code>·<code>reward</code></td><td>ROAS 자동 계산</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-tip">
+        <div class="label">바로 시연하기</div>
+        <p>업로드할 데이터가 없어도 <strong>샘플로 시연</strong> 버튼을 누르면 800행짜리 가상 데이터로 차트가 어떻게 보이는지 즉시 확인할 수 있어요.</p>
+      </div>
+
+      <p><strong>↓ 양식 받기</strong> 버튼으로 권장 컬럼이 들어있는 CSV 템플릿도 받을 수 있습니다.</p>
+    </section>
+
+    <!-- STEP 5 -->
+    <section id="step5">
+      <div class="t-eyebrow">Step 05</div>
+      <h2 class="t-h2" style="margin-top:8px">인사이트</h2>
+      <p>운영 로그·업로드 데이터에서 <strong>자동으로 패턴을 찾아</strong> 다음 기획의 단서를 보여줍니다.</p>
+
+      <h3 class="t-h3">자동 패턴 3종</h3>
+      <ul>
+        <li><strong>주말 vs 평일</strong> — 어느 요일에 결제가 몰리는지 자동 비교</li>
+        <li><strong>최고 ROAS 기획안</strong> — 효율 1위 기획안의 혜택 구조 추출</li>
+        <li><strong>최근 7일 추세</strong> — 직전 7일 대비 증감률 (±20% 초과 시 경고)</li>
+      </ul>
+
+      <div class="callout">
+        <div class="label">언제부터 보이나요?</div>
+        <p>운영 로그가 <strong>최소 7일치</strong> 쌓이면 추세 분석이 시작됩니다. 그 전에는 "충분한 데이터가 아직 없어요"라고 표시돼요.</p>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- FEATURES -->
+    <section id="features">
+      <div class="t-eyebrow">Features</div>
+      <h2 class="t-h2" style="margin-top:8px">알아두면 좋은 핵심 기능</h2>
+    </section>
+
+    <section id="brand">
+      <h3 class="t-h3">회사 정보 설정의 위력</h3>
+      <p>설정 페이지의 <strong>5개 필드</strong>는 단순한 메타 정보가 아니라, 모든 산출물의 자동 변수로 작동합니다.</p>
+      <table>
+        <thead><tr><th>필드</th><th>예시</th><th>반영되는 곳</th></tr></thead>
+        <tbody>
+          <tr><td><strong>서비스명</strong></td><td>TRIP+</td><td>모든 카피의 발신자 라벨·푸시 앱 이름</td></tr>
+          <tr><td><strong>회사명</strong></td><td>Bizplay</td><td>1페이지 기획서 상단</td></tr>
+          <tr><td><strong>발신자</strong></td><td>TRIP+ 운영팀</td><td>이메일 서명·메시지 발송자</td></tr>
+          <tr><td><strong>결재선</strong></td><td>담당,팀장,본부장,대표</td><td>1페이지 기획서 우하단 도장칸 자동 생성</td></tr>
+          <tr><td><strong>문서 헤더</strong></td><td>Bizplay · 출장전략팀</td><td>1페이지 기획서 좌상단</td></tr>
+        </tbody>
+      </table>
+      <div class="callout callout-tip">
+        <div class="label">한번만 입력하면 끝</div>
+        <p>이 값들은 브라우저에 저장되어 다음에 접속해도 그대로 살아있어요. 기획안마다 매번 회사명을 칠 필요가 없습니다.</p>
+      </div>
+    </section>
+
+    <section id="doc">
+      <h3 class="t-h3">1페이지 결재 문서</h3>
+      <p>산출물 페이지의 <strong>📄 결재 문서</strong> 탭은 결재 라인이 받아볼 만한 품질의 A4 1페이지 문서를 자동 생성합니다.</p>
+      <p>구성 요소:</p>
+      <ol>
+        <li><strong>표지</strong> — 회사 헤더 · 문서번호 (자동 생성) · 작성일 · 제목 · 부제</li>
+        <li><strong>01 개요</strong> — 유형·기간·예산·KPI 목표 (일평균 예산 자동 계산)</li>
+        <li><strong>02 대상·혜택</strong> — 세그먼트·혜택 구조·1인 한도·적용 조건</li>
+        <li><strong>03 채널</strong> — 발송 채널 칩 + 랜딩 URL + UTM 표시</li>
+        <li><strong>04 현재 성과</strong> — 운영 로그가 있으면 자동 추가 (4개 KPI)</li>
+        <li><strong>05 기대 효과</strong> — 목적·KPI 기준 검토 의견 문단</li>
+        <li><strong>결재선</strong> — 회사 정보의 결재선이 자동으로 도장칸으로</li>
+      </ol>
+
+      <h4 class="t-h4">내보내기 방법 3종</h4>
+      <ul>
+        <li><strong>📋 HTML 복사</strong> — 이메일·메신저·노션에 그대로 붙여넣기</li>
+        <li><strong>↓ PNG</strong> — 2x 해상도 이미지로 저장</li>
+        <li><strong>🖨 인쇄·PDF</strong> — 브라우저 인쇄 → PDF로 저장 → 결재 시스템 첨부</li>
+      </ul>
+    </section>
+
+    <section id="backup">
+      <h3 class="t-h3">데이터 백업·복원</h3>
+      <p>EP Studio의 모든 데이터는 <strong>브라우저 LocalStorage</strong>에 저장됩니다. 별도 서버가 없어서 빠르고 안전한 대신, <em>다른 컴퓨터로 옮기거나 캐시를 지우면 사라질 수 있어요</em>.</p>
+      <p>설정 → 데이터 관리에서:</p>
+      <ul>
+        <li><strong>↓ 전체 백업</strong> — 기획안·로그·이슈·회사 정보를 모두 포함한 단일 JSON 파일로 저장</li>
+        <li><strong>↑ 백업 불러오기</strong> — JSON 파일로 한 번에 복원</li>
+        <li><strong>샘플 채우기</strong> — 3개 기획안 + 30일 로그로 도구 둘러보기</li>
+        <li><strong>전체 초기화</strong> — 모든 데이터 삭제 (확인 2번 필요)</li>
+      </ul>
+      <div class="callout callout-warn">
+        <div class="label">권장</div>
+        <p>중요한 기획안을 만든 직후, 또는 한 달에 한 번 정도는 <strong>백업 다운로드</strong>를 받아두세요. 브라우저 캐시 정리 한 번에 데이터가 날아갈 수 있습니다.</p>
+      </div>
+    </section>
+
+    <hr>
+
+    <!-- FAQ -->
+    <section id="faq">
+      <div class="t-eyebrow">FAQ</div>
+      <h2 class="t-h2" style="margin-top:8px">자주 묻는 질문</h2>
+
+      <div class="faq-item">
+        <div class="faq-q"><div class="faq-q-text">데이터는 어디에 저장되나요? 서버에 올라가나요?</div><div class="faq-toggle">+</div></div>
+        <div class="faq-a"><div class="faq-a-inner"><p>아니요. 모든 데이터는 <strong>지금 사용 중인 브라우저의 LocalStorage</strong>에만 저장됩니다. 외부 서버로 전송되지 않으므로 회사 보안 정책에서도 안전합니다.</p><p>대신 다른 컴퓨터·다른 브라우저로 옮기려면 <strong>설정 → 전체 백업</strong>으로 JSON 파일을 받아 새 환경에서 불러와야 합니다.</p></div></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q"><div class="faq-q-text">AI가 카피를 생성하나요?</div><div class="faq-toggle">+</div></div>
+        <div class="faq-a"><div class="faq-a-inner"><p>v0.4 Pro는 <strong>AI 통합을 의도적으로 제거</strong>한 버전입니다. 모든 카피는 톤·채널별로 정교하게 설계된 <em>룰 기반 템플릿</em>에서 생성되며, 회사 정보·기획안의 변수가 자동으로 채워집니다.</p><p>외부 API 키도 필요 없고, 발송 전 검수 과정에서 어떤 카피가 나올지 예측 가능합니다.</p></div></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q"><div class="faq-q-text">카피가 마음에 안 들면?</div><div class="faq-toggle">+</div></div>
+        <div class="faq-a"><div class="faq-a-inner"><p>3가지 방법이 있어요.</p><ul><li><strong>↻ 새 변형</strong> 버튼 — 같은 톤에서 다른 변형으로 즉시 교체</li><li><strong>톤 변경</strong> — 혜택강조→한정성→친근→격식 4개 톤으로 분위기 전환</li><li><strong>복사 후 수동 편집</strong> — 호버하면 나타나는 ⌘ 복사로 가져가서 직접 수정</li></ul></div></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q"><div class="faq-q-text">1페이지 기획서를 PDF로 받으려면?</div><div class="faq-toggle">+</div></div>
+        <div class="faq-a"><div class="faq-a-inner"><p>산출물 → 📄 결재 문서 탭 → <strong>🖨 인쇄·PDF</strong> 버튼 → 브라우저 인쇄 창에서 <em>대상</em>을 "PDF로 저장"으로 변경하면 됩니다. A4 18mm 여백으로 자동 설정되어 있어요.</p></div></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q"><div class="faq-q-text">엑셀 업로드가 안 돼요</div><div class="faq-toggle">+</div></div>
+        <div class="faq-a"><div class="faq-a-inner"><p>두 가지를 확인해 보세요.</p><ol><li><strong>필수 컬럼이 있는지</strong> — <em>날짜</em>·<em>결제액</em> 두 컬럼은 반드시 있어야 합니다. 컬럼명은 한국어든 영문이든 상관없어요.</li><li><strong>첫 행이 헤더인지</strong> — 첫 행이 컬럼 이름이어야 합니다. 빈 행이나 합쳐진 셀이 있으면 인식이 어려울 수 있어요.</li></ol><p>업로드가 계속 실패하면 <strong>↓ 양식 받기</strong>로 권장 포맷의 CSV를 받아 그 형식대로 정리해 보세요.</p></div></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q"><div class="faq-q-text">여러 사람이 같이 쓸 수 있나요?</div><div class="faq-toggle">+</div></div>
+        <div class="faq-a"><div class="faq-a-inner"><p>현재 v0.4 Pro는 <strong>개인 도구</strong>입니다. 협업이 필요한 경우 두 가지 방법을 권장합니다.</p><ul><li><strong>JSON 공유</strong> — 한 명이 만들고 전체 백업 JSON을 팀 슬랙·드라이브에 공유. 받는 사람은 그 JSON을 불러와서 사용</li><li><strong>1페이지 문서 공유</strong> — 결재 문서를 PNG·PDF로 내보내서 공유 (가장 일반적인 방법)</li></ul></div></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q"><div class="faq-q-text">기획안을 실수로 지웠어요</div><div class="faq-toggle">+</div></div>
+        <div class="faq-a"><div class="faq-a-inner"><p>아쉽게도 <strong>휴지통은 없습니다</strong>. 그래서 삭제 버튼을 누르면 확인 창이 한 번 떠요.</p><p>최근에 전체 백업을 받아둔 게 있다면 <em>설정 → 백업 불러오기</em>로 그 시점으로 되돌릴 수 있습니다. 이래서 주기적인 백업이 중요해요.</p></div></div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q"><div class="faq-q-text">모바일에서도 쓸 수 있나요?</div><div class="faq-toggle">+</div></div>
+        <div class="faq-a"><div class="faq-a-inner"><p>기본적으로 데스크톱·태블릿용 도구입니다. 모바일에서도 보이긴 하지만 위저드·산출물 페이지의 레이아웃이 좁아져서 입력 작업이 불편해요. <strong>일별 로그 빠른 입력</strong>이나 <strong>산출물 확인</strong> 정도라면 모바일에서도 무리 없습니다.</p></div></div>
+      </div>
+    </section>
+
+    <!-- SHORTCUTS -->
+    <section id="shortcuts">
+      <h2 class="t-h2">단축키 · 실무 꿀팁</h2>
+
+      <h3 class="t-h3">단축키</h3>
+      <table>
+        <thead><tr><th style="width:160px">동작</th><th>키</th></tr></thead>
+        <tbody>
+          <tr><td>열려있는 모달 닫기</td><td><span class="kbd">Esc</span></td></tr>
+          <tr><td>일별 로그 입력 (포커스가 마지막 필드에 있을 때)</td><td><span class="kbd">Enter</span> 후 <span class="kbd">Tab</span></td></tr>
+          <tr><td>인쇄·PDF</td><td><span class="kbd">⌘/Ctrl</span> + <span class="kbd">P</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3 class="t-h3">실무 꿀팁 5선</h3>
+      <ol>
+        <li><strong>회사 정보부터 채우세요</strong> — 첫 5분만 투자하면 그 뒤 모든 기획안에서 시간이 절약됩니다.</li>
+        <li><strong>템플릿으로 시작하세요</strong> — 빈 위저드보다 훨씬 빠릅니다. 마음에 안 들면 어차피 수정 가능해요.</li>
+        <li><strong>매일 30초만 운영 기록</strong> — 종료 후 회고 PT 만들 때 데이터가 손에 있는 것과 없는 것은 천지 차이입니다.</li>
+        <li><strong>이슈는 발생 즉시 기록</strong> — 시간이 지나면 무슨 일이었는지 까먹어요. "주말 트래픽 -38%, 원인 푸시 미발송" 한 줄이면 충분합니다.</li>
+        <li><strong>결재 받기 전 톤 4개 다 돌려보기</strong> — 같은 기획안이 톤 하나로 분위기가 완전히 바뀝니다. 결재 라인 성향에 맞는 톤을 골라 첨부하세요.</li>
+      </ol>
+    </section>
+
+    <hr>
+
+    <section style="text-align:center;padding:32px 0">
+      <h3 class="t-h3" style="margin:0 0 12px">시작할 준비가 됐어요?</h3>
+      <p style="color:var(--ink-4);font-size:13px;margin-bottom:20px">이 매뉴얼은 언제든 다시 열어볼 수 있어요.</p>
+      <a href="이벤트.html" class="topbar-cta" style="font-size:14px;padding:10px 20px">EP Studio 열기 →</a>
+    </section>
+
+  </main>
+</div>
+
+<footer class="footer">
+  <p>EP Studio v0.4 Pro · 단일 HTML 기획 스튜디오 · 데이터는 브라우저에만 저장됩니다.<br>피드백·문의는 운영자에게 직접 전달해 주세요.</p>
+</footer>
+
+<script>
+// FAQ accordion
+document.querySelectorAll('.faq-q').forEach(q => {
+  q.addEventListener('click', () => {
+    q.parentElement.classList.toggle('open');
+  });
+});
+
+// Scroll spy for TOC
+const tocLinks = document.querySelectorAll('.toc-link');
+const sections = Array.from(tocLinks).map(l => document.querySelector(l.getAttribute('href'))).filter(Boolean);
+function updateActiveTOC() {
+  const y = window.scrollY + 120;
+  let active = sections[0];
+  for (const s of sections) { if (s.offsetTop <= y) active = s; }
+  tocLinks.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + active.id));
+}
+window.addEventListener('scroll', updateActiveTOC, { passive: true });
+updateActiveTOC();
+
+// Smooth scroll for TOC links
+tocLinks.forEach(l => {
+  l.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(l.getAttribute('href'));
+    if (target) {
+      const offset = target.offsetTop - 80;
+      window.scrollTo({ top: offset, behavior: 'smooth' });
+    }
+  });
+});
+</script>
+</body>
+</html>
